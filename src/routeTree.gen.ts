@@ -16,6 +16,7 @@ import { Route as MeetingNotesRouteImport } from './routes/meeting-notes'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ChatIndexRouteImport } from './routes/chat.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,34 +53,41 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatIndexRoute = ChatIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ChatRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/chat': typeof ChatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/email': typeof EmailRoute
   '/meeting-notes': typeof MeetingNotesRoute
   '/planner': typeof PlannerRoute
   '/research': typeof ResearchRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/chat': typeof ChatRoute
   '/email': typeof EmailRoute
   '/meeting-notes': typeof MeetingNotesRoute
   '/planner': typeof PlannerRoute
   '/research': typeof ResearchRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat': typeof ChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/chat': typeof ChatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/email': typeof EmailRoute
   '/meeting-notes': typeof MeetingNotesRoute
   '/planner': typeof PlannerRoute
   '/research': typeof ResearchRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,15 +99,16 @@ export interface FileRouteTypes {
     | '/planner'
     | '/research'
     | '/api/chat'
+    | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/chat'
     | '/email'
     | '/meeting-notes'
     | '/planner'
     | '/research'
     | '/api/chat'
+    | '/chat'
   id:
     | '__root__'
     | '/'
@@ -109,11 +118,12 @@ export interface FileRouteTypes {
     | '/planner'
     | '/research'
     | '/api/chat'
+    | '/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ChatRoute: typeof ChatRoute
+  ChatRoute: typeof ChatRouteWithChildren
   EmailRoute: typeof EmailRoute
   MeetingNotesRoute: typeof MeetingNotesRoute
   PlannerRoute: typeof PlannerRoute
@@ -172,12 +182,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/': {
+      id: '/chat/'
+      path: '/'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof ChatIndexRouteImport
+      parentRoute: typeof ChatRoute
+    }
   }
 }
 
+interface ChatRouteChildren {
+  ChatIndexRoute: typeof ChatIndexRoute
+}
+
+const ChatRouteChildren: ChatRouteChildren = {
+  ChatIndexRoute: ChatIndexRoute,
+}
+
+const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ChatRoute: ChatRoute,
+  ChatRoute: ChatRouteWithChildren,
   EmailRoute: EmailRoute,
   MeetingNotesRoute: MeetingNotesRoute,
   PlannerRoute: PlannerRoute,
