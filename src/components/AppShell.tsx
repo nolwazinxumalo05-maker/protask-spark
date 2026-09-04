@@ -93,7 +93,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 ME
               </div>
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium">Maya Ellison</p>
+                <p className="truncate text-sm font-medium">Ruha Nandakumar</p>
                 <p className="truncate text-[11px] text-ink-soft">Pro plan</p>
               </div>
             </div>
