@@ -14,7 +14,7 @@ export type EmailInput = {
   audience: string;
   tone: string;
   length: string;
-  context?: string;
+  context?: string | undefined;
 };
 
 export function emailPrompt(input: EmailInput) {
